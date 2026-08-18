@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 async def fetch_project():
     try:
-        query = """SELECT * FROM project WHERE id=$1"""
+        query = """SELECT * FROM project"""
         row = await database.pool.fetchrow(query, 2);
         return dict(row) if row else None
     except Exception:

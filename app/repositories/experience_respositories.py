@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 async def fetch_experience():
     try:
-        query = """SELECT * FROM experience WHERE id=$1"""
+        query = """SELECT * FROM experience"""
         row = await database.pool.fetchrow(query, 2);
         return dict(row) if row else None
     except Exception:

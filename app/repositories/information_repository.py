@@ -8,7 +8,16 @@ import json
 
 logger = logging.getLogger(__name__)
 async def feth_information():
-    pass
+    try: 
+        query = """SELECT * FROM information"""
+        response = await database.pool.fetchrow(
+            query,
+        )
+        return response
+    except Exception:
+        logger.exception("Something Went Wrong")
+        raise
+    
 
 async def set_peronal_information(data: Information):
     try: 

@@ -9,7 +9,22 @@ from app.schemas.information_schema import Information
 from app.config.upload import save_upload
 
 async def get_information():
-    return await get_information_service()
+    try:
+        response = await get_information_service()
+        return JSONResponse(
+            status_code=200,
+            content=jsonable_encoder(
+                {
+                    "success": True,
+                    "mssage": "Record Fetched Successfully",
+                    "data": response
+                }
+            )
+        )
+        
+    except Exception:
+        logger.exception("Something Went Wrong")
+        raise
 
 async def add_information(
     profile_summary: str = Form(...),
