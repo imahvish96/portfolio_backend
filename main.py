@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from app.routes.route import route
 from contextlib import asynccontextmanager
@@ -35,6 +36,22 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(route)
+
+# 1. Define the origins that are allowed to make requests to your API
+origins = [
+    "http://localhost:3000",    # React default port
+    "http://localhost:5173",    # Vite/Vue default port
+    "https://yourfrontend.com"  # Your production domain
+]
+
+# 2. Add the CORSMiddleware to your FastAPI application
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,           # Allows requests from specified origins
+    allow_credentials=True,         # Allows cookies to be included in requests
+    allow_methods=["*"],            # Allows all HTTP methods (GET, POST, PUT, etc.)
+    allow_headers=["*"],            # Allows all request headers
+)
 
 
 def custom_openapi():

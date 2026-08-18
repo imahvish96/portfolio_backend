@@ -6,7 +6,7 @@ from app.controllers.experience_controller import get_experience, add_experience
 route = APIRouter(prefix="/api/v1", tags=["Portfolio"])
 
 ############# Information Route #########################
-route.get('/', status_code=status.HTTP_200_OK)(get_information)
+route.get('/information', status_code=status.HTTP_200_OK)(get_information)
 route.post('/information', status_code=status.HTTP_201_CREATED)(add_information)
 route.patch('/information', status_code=status.HTTP_200_OK)(update_information)
 
