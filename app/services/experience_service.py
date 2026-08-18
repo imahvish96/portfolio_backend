@@ -5,21 +5,23 @@ from app.schemas.experience_schema import ExperienceCreate
 logger = logging.getLogger(__name__)
 
 async def get_experience_service():
-    await fetch_experience()
+    try:
+        return await fetch_experience()
+    except:
+        logger.exception("Something Went Wrong")
+        raise
     
 async def add_experience_service(data: ExperienceCreate):
     try:    
-        response = await create_experience(data)
-        return response
+        return await create_experience(data)
     except Exception:
-        logging.exception("Something Went Wrong");
+        logger.exception("Something Went Wrong");
         raise
         
         
 async def edit_experience(data: ExperienceCreate):
     try:    
-        response = await update_experience(data)
-        return response
+        return await update_experience(data)
     except Exception:
-        logging.exception("Something Went Wrong");
+        logger.exception("Something Went Wrong");
         raise

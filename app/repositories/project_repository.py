@@ -8,10 +8,9 @@ logger = logging.getLogger(__name__)
 async def fetch_project():
     try:
         query = """SELECT * FROM project"""
-        row = await database.pool.fetchrow(query, 2);
-        return dict(row) if row else None
+        return await database.pool.fetch(query);
     except Exception:
-        logging.exception("Something Went Wrong");
+        logger.exception("Something Went Wrong");
         raise
     
 async def create_project(data: ProjectCreate):
@@ -30,7 +29,7 @@ async def create_project(data: ProjectCreate):
             );
         return response
     except Exception:
-        logging.exception("Something Went Wrong");
+        logger.exception("Something Went Wrong");
         raise
     
 async def update_project(data: ProjectCreate):

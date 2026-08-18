@@ -21,7 +21,6 @@ async def get_information():
                 }
             )
         )
-        
     except Exception:
         logger.exception("Something Went Wrong")
         raise

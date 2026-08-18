@@ -12,11 +12,11 @@ async def get_project():
     try:
         response = await get_project_service()
         return JSONResponse(
-            status_code= 201,
+            status_code= 200,
             content=jsonable_encoder(
                 {
                     "status": True,
-                    "message": "Success",
+                    "message": "Record Fetched Successfully",
                     "data": response
                 }
             )

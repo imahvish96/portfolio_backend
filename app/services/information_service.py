@@ -5,7 +5,11 @@ from app.schemas.information_schema import Information
 
 logger = logging.getLogger(__name__)
 async def get_information_service():
-    await feth_information()
+    try: 
+        return await feth_information()
+    except Exception:
+        logger.exception("Something Went Wrong");
+        raise
     
 async def add_personal_information_service(data: Information):
     try:    

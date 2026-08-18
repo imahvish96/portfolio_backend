@@ -15,7 +15,7 @@ async def get_experience():
             content=jsonable_encoder(
                 {
                     "status": True,
-                    "message": "Success",
+                    "message": "Record Fetched Successfully",
                     "data": response
                 }
             )

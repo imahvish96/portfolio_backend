@@ -7,7 +7,7 @@ async def get_project_service():
     try:
         return await fetch_project();
     except Exception:
-        logger.exception("Error while adding project")
+        logger.exception("Error while fetching project")
         raise;
     
 async def add_poroject_service(data):
@@ -21,5 +21,5 @@ async def edit_project(data):
     try:
         return await update_project(data);
     except Exception:
-        logger.exception("Error while adding project")
+        logger.exception("Error while updating project")
         raise;
