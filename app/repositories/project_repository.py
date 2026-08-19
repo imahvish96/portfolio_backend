@@ -1,7 +1,6 @@
-import json
 import logging
 from app.config import database
-from app.schemas.project_schema import ProjectCreate
+from app.schemas.project_schema import ProjectCreate, ProjectUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ async def create_project(data: ProjectCreate):
             query,
                 data.project_name,
                 data.description,
-                json.dumps(data.tech_used),
+                data.tech_used,
                 data.image_url,
                 data.live_link,
                 data.github_url
@@ -32,23 +31,38 @@ async def create_project(data: ProjectCreate):
         logger.exception("Something Went Wrong");
         raise
     
-async def update_project(data: ProjectCreate):
+async def update_project(data: ProjectUpdate, id: int):
     try:
+        # image_url COALESCE: None aaya to purani image rahegi
         query = """UPDATE project
-        SET project_name=$1, description=$2, tech_used=$3, image_url=$4, live_link=$5, github_url=$6
+        SET project_name=$1,
+            description=$2,
+            tech_used=$3::jsonb,
+            image_url=COALESCE($4, image_url),
+            live_link=$5,
+            github_url=$6
         WHERE id=$7"""
         response = await database.pool.execute(
             query,
                 data.project_name,
                 data.description,
-                json.dumps(data.tech_used),
+                data.tech_used,
                 data.image_url,
                 data.live_link,
                 data.github_url,
-                2
+                id
             );
         return response
     except Exception:
         logging.exception("Something Went Wrong");
+        raise
+    
+async def remove_project(id: int):
+    try:
+        query = """DELETE FROM project WHERE id=$1 RETURNING id"""
+        row = await database.pool.fetchrow(query, id);
+        return row
+    except Exception:
+        logger.exception("Something Went Wrong");
         raise
     

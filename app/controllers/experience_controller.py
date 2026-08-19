@@ -1,6 +1,6 @@
 import logging
 from fastapi import Form
-from app.services.experience_service import get_experience_service, add_experience_service, edit_experience;
+from app.services.experience_service import get_experience_service, add_experience_service, update_experience_service, delete_experience_service;
 from app.schemas.experience_schema import ExperienceCreate
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -42,15 +42,32 @@ async def add_experience(experience_data: ExperienceCreate):
         raise;
     
 
-async def change_experience(experience_data: ExperienceCreate):
+async def update_experience(experience_data: ExperienceCreate, id:int):
     try:
-        response = await edit_experience(experience_data)
+        response = await update_experience_service(experience_data, id)
         return JSONResponse(
             status_code= 200,
             content=jsonable_encoder(
                 {
                     "status": True,
                     "message": "Project Updated Successfully",
+                    "data": response
+                }
+            )
+        );
+    except Exception:
+        logger.exception("Error while adding project")
+        raise;
+    
+async def delete_experience(id:int):
+    try:
+        response = await delete_experience_service(id)
+        return JSONResponse(
+            status_code= 200,
+            content=jsonable_encoder(
+                {
+                    "status": True,
+                    "message": "Project Deleted Successfully",
                     "data": response
                 }
             )

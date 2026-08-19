@@ -1,9 +1,22 @@
 import asyncpg
 import os
+import json
 
 DATABASE_URL = os.getenv("DB_URL")
 
 pool = None;
+
+
+async def _init_connection(conn):
+    # jsonb columns ko Python list/dict se auto encode/decode karo
+    # (read pe list milegi, write pe list/dict de sakte ho — json.dumps ki zaroorat nahi)
+    await conn.set_type_codec(
+        "jsonb",
+        encoder=json.dumps,
+        decoder=json.loads,
+        schema="pg_catalog",
+    )
+
 
 async def connect_db():
     global pool
@@ -12,6 +25,7 @@ async def connect_db():
         min_size=1,
         max_size=5,
         statement_cache_size=0,
+        init=_init_connection,
     )
     print(50 * "*");
     print("✅ Database Connected")

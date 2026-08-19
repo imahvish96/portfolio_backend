@@ -1,7 +1,7 @@
 import logging
-from fastapi import Form, File, UploadFile
-from app.services.project_service import add_poroject_service, edit_project, get_project_service;
-from app.schemas.project_schema import ProjectCreate
+from fastapi import Form, File, UploadFile, HTTPException
+from app.services.project_service import add_poroject_service, update_project_service, get_project_service, delete_project_service;
+from app.schemas.project_schema import ProjectCreate, ProjectUpdate
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from app.config.upload import save_upload
@@ -58,10 +58,27 @@ async def add_project(
         logger.exception("Error while adding project")
         raise;
     
-
-async def change_project(project_data: ProjectCreate):
+async def update_project(
+    id: int,
+    project_name: str = Form(...),
+    description: str = Form(...),
+    tech_used: list[str] = Form(...),
+    live_link: str = Form(...),
+    github_url: str = Form(...),
+    image_url: UploadFile | None = File(None),
+):
     try:
-        response = await edit_project(project_data)
+        # nayi image aayi to upload karo, warna None (purani image rahegi)
+        thumbnail = await save_upload(image_url) if image_url else None
+        project_data = ProjectUpdate(
+            project_name=project_name,
+            description=description,
+            tech_used=tech_used,
+            image_url=thumbnail,
+            live_link=live_link,
+            github_url=github_url,
+        )
+        response = await update_project_service(project_data, id)
         return JSONResponse(
             status_code= 200,
             content=jsonable_encoder(
@@ -75,4 +92,26 @@ async def change_project(project_data: ProjectCreate):
     except Exception:
         logger.exception("Error while adding project")
         raise;
+
+async def delete_project(id:int):
+    try: 
+        response = await delete_project_service(id);
+        if response is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Information not found",
+            )
+        return JSONResponse(
+            status_code= 200,
+            content=jsonable_encoder(
+                {
+                    "status": True,
+                    "message": "Project Deleted Successfully",
+                    "data": response
+                }
+            )
+        );
+    except Exception:
+        logger.exception("Error while adding project")
+        raise
     
