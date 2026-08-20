@@ -41,7 +41,7 @@ app.include_router(route)
 origins = [
     "http://localhost:3000",    # React default port
     "http://localhost:5173",    # Vite/Vue default port
-    "https://yourfrontend.com"  # Your production domain
+    "https://porfolio-be-ui.vercel.app/" # Your production domain
 ]
 
 # 2. Add the CORSMiddleware to your FastAPI application
